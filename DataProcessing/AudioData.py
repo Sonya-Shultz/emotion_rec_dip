@@ -2,6 +2,9 @@ import librosa
 from librosa import load, feature
 import numpy as np
 
+from CNNsClass.CNN import CNN
+from DataProcessing.ResultData import ResultData
+
 
 class AudioData:
     def __init__(self):
@@ -16,7 +19,6 @@ class AudioData:
         for el in tmp_arr:
             ele = AudioData.__find_features(el, sr)
             self.features.append(ele)
-        self.raw_data = []
 
     def read_input(self, data, sr):
         self.raw_data = data
@@ -57,3 +59,13 @@ class AudioData:
         mSpect = np.mean(feature.melspectrogram(y=data, sr=sr).T, axis=0)
         result = np.hstack((result, mSpect))
         return result
+
+    def process(self):
+        data = self.features
+        data = CNN.scaler.transform(data)
+        data = np.expand_dims(data, axis=2)
+        res = ResultData()
+        res.set_param(self.filename, "AUDIO")
+        for el in data:
+            res.add_new_data(CNN.predict_audio_data(el))
+        return res

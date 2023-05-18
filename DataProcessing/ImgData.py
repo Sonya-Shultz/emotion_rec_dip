@@ -1,5 +1,9 @@
 from matplotlib import image
 import cv2
+import numpy as np
+
+from CNNsClass.CNN import CNN
+from DataProcessing.ResultData import ResultData
 
 
 class ImgData:
@@ -25,10 +29,17 @@ class ImgData:
         tmp_arr = []
         for (x, y, w, h) in faces:
             tmp = []
-            cv2.rectangle(gray, (x, y), (x + w, y + h), (0, 0, 255), 2)
             roi_gray = gray[y:y + h, x:x + w]
             roi_gray = cv2.resize(roi_gray, (48, 48))
             tmp.extend([x, y, w, h])
             tmp.extend(roi_gray)
             tmp_arr.append(tmp)
         return tmp_arr
+
+    def process(self):
+        res = ResultData()
+        res.set_param(self.filename, "IMG")
+        for el in self.features:
+            tmp = CNN.predict_img_data(np.reshape(el[4:], (48, 48)))
+            res.add_new_data(tmp)
+        return res
