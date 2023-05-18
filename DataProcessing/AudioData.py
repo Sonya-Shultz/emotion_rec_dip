@@ -7,6 +7,7 @@ from DataProcessing.ResultData import ResultData
 
 
 class AudioData:
+
     def __init__(self):
         self.filename = ""
         self.raw_data = []
@@ -30,11 +31,11 @@ class AudioData:
     def __divide(self, sr):
         last_ind = 0
         tmp_arr = []
-        len_in_chank = int(len(self.raw_data) / sr / 2.5)
+        len_in_chank = int(len(self.raw_data) / sr / ResultData.part_len)
 
         for i in range(0, len_in_chank):
-            tmp_arr.append(self.raw_data[last_ind: int((i + 1) * sr * 2.5)])
-            last_ind = int((i + 1) * sr * 2.5)
+            tmp_arr.append(self.raw_data[last_ind: int((i + 1) * sr * ResultData.part_len)])
+            last_ind = int((i + 1) * sr * ResultData.part_len)
         tmp_arr.append(self.raw_data[last_ind: len(self.raw_data)])
         for i in range(0, len(tmp_arr[0]) - len(tmp_arr[len(tmp_arr) - 1])):
             np.append(tmp_arr[len(tmp_arr) - 1], 0)

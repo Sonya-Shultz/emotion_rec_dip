@@ -89,15 +89,18 @@ class PrepareData:
         cv2.destroyAllWindows()
 
     @staticmethod
-    def for_video(filename):
+    def for_video(filename, with_sound=True, with_video=True):
         vd = VideoData()
         vd.read_file(filename)
-        res1 = vd.audioPart.process()
+        res1 = None
+        if with_sound:
+            res1 = vd.audioPart.process()
         res2 = []
-        for i in range(len(vd.photoPart)):
-            el = vd.photoPart[i]
-            res2.append(el.process())
-            img = np.array(el.raw_data)
+        if with_video:
+            for i in range(len(vd.photoPart)):
+                el = vd.photoPart[i]
+                res2.append(el.process())
+        return res1, res2
 
     @staticmethod
     def __find_max_em(data, em_numb=1):
