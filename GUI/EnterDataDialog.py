@@ -36,6 +36,11 @@ class EnterDataDialog(QDialog):
         self.all_ed_comp.append(button_file)
         button_file.adjustSize()
 
+        button_exit = QPushButton(LENG.elem.BTNS_TEXTs[2], self)
+        button_exit.move(550, 290)
+        button_exit.clicked.connect(self.on_click_close)
+        button_exit.adjustSize()
+
         lbl = QLabel(LENG.elem.LBL_TEXTs[0], self)
         lbl.move(750, 60)
         lbl.show()
@@ -68,7 +73,7 @@ class EnterDataDialog(QDialog):
         lang_list = QComboBox(self)
         lang_list.move(1000, 600)
         lang_list.addItems(LENG.LANG_LIST)
-        self.__btn_arr = [button, button_file]
+        self.__btn_arr = [button, button_file, button_exit]
         self.__combo_box = type_list
         self.__checkbox_arr = [checkbox_rt, checkbox_sf, checkbox_shd]
 
@@ -100,6 +105,9 @@ class EnterDataDialog(QDialog):
         self.open_files()
         self.__filename_lbl.setText(LENG.elem.LBL_TEXTs[0] + self.file_name)
         self.__filename_lbl.adjustSize()
+
+    def on_click_close(self):
+        self.reject()
 
     def on_click_process(self):
         lb = QLabel("", self)
@@ -165,7 +173,8 @@ class EnterDataDialog(QDialog):
         if self.data_type in resol and self.file_name != "":
             r = resol[self.data_type]
             for el in r:
-                if self.file_name.endswith(el):
+                st = self.file_name.lower()
+                if st.endswith(el):
                     return True
             return False
         else:

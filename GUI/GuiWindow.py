@@ -1,9 +1,11 @@
-import time
+import sys
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSlot, Qt
+
+from GUI.DataController import DataController
+from GUI.EnterDataDialog import EnterDataDialog
 from GUI.Language import LENG
-from DataProcessing.PrepareData import PrepareData
 
 
 class GuiWindow(QMainWindow):
@@ -21,9 +23,34 @@ class GuiWindow(QMainWindow):
         self.lb = QLabel(LENG.elem.SYSTEM_MESS_TMP[1], self)
         self.lb.show()
 
+        self.btn = QPushButton(LENG.elem.BTNS_TEXTs[3], self)
+        self.btn.move(750, 60)
+        self.btn.clicked.connect(self.on_click_back)
+        self.btn.adjustSize()
+
+        self.button_exit = QPushButton(LENG.elem.BTNS_TEXTs[2], self)
+        self.button_exit.move(750, 120)
+        self.button_exit.clicked.connect(self.on_click_close)
+        self.button_exit.adjustSize()
+
+        self.lbl = QLabel("", self)
+        self.lbl.move(0, 0)
+        self.lbl.resize(20, 700)
+
+    def on_click_close(self):
+        self.close()
+
+    def on_click_back(self):
+        self.hide()
+        choose = EnterDataDialog()
+        if not choose.exec_():  # 'reject': user pressed 'Cancel', so quit
+            sys.exit(0)
+        self.set_data(choose)
+        self.show()
+
     def show(self) -> None:
         super().show()
-        self.comp_data_controller()
+        DataController.comp_data_controller(self)
 
     def set_data(self, data):
         self.data_type = data.data_type
@@ -32,26 +59,4 @@ class GuiWindow(QMainWindow):
         self.show_all_data = data.show_all_data
         self.file_name = data.file_name
 
-    def comp_data_controller(self):
-        res = None
-        res2 = None
-        print(self.is_from_file, self.data_type)
-        if self.is_from_file:
-            if self.data_type == 0:
-                res, res2 = PrepareData.for_video(self.file_name)
-            elif self.data_type == 1:
-                _, res2 = PrepareData.for_video(self.file_name, with_sound=False)
-            elif self.data_type == 2:
-                res, _ = PrepareData.for_video(self.file_name, with_video=False)
-            elif self.data_type == 3:
-                res = PrepareData.for_audio(self.file_name)
-            else:
-                res = PrepareData.for_photo(self.file_name)
-            self.lb.setText(LENG.elem.SYSTEM_MESS_GOOD[0])
-            if res:
-                res.write_to_file()
-            if res2:
-                res2.write_to_file()
-        else:
-            PrepareData.for_video_real_time()
 

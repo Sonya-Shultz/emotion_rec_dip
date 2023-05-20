@@ -43,3 +43,4 @@ class ImgData:
             tmp = CNN.predict_img_data(np.reshape(el[4:], (48, 48)))
             res.add_new_data(tmp, position=el[:4])
         return res
+    

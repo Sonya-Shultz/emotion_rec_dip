@@ -21,7 +21,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     choose = EnterDataDialog()
     if not choose.exec_():  # 'reject': user pressed 'Cancel', so quit
-        sys.exit(-1)
+        sys.exit(0)
     win = GuiWindow()
     win.set_data(choose)
     win.show()

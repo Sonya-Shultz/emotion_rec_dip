@@ -15,14 +15,14 @@ class PrepareData:
         ad = AudioData()
         ad.read_file(filename)
         res = ad.process()
-        return res
+        return ad, res
 
     @staticmethod
     def for_photo(filename):
         imd = ImgData()
         imd.read_file(filename)
         res = imd.process()
-        return res
+        return imd, res
 
     @staticmethod
     def __video_rl_part():
@@ -100,7 +100,7 @@ class PrepareData:
             for i in range(len(vd.photoPart)):
                 el = vd.photoPart[i]
                 res2.append(el.process())
-        return res1, res2
+        return vd, res1, res2
 
     @staticmethod
     def __find_max_em(data, em_numb=1):
