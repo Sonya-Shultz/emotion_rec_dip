@@ -8,7 +8,8 @@ from GUI.Language import LENG
 
 class ResultData:
     part_len = 2.5
-    spf = 1.0/30.0
+    spf = 1.0/20.0
+    fps = 20.0
 
     def __init__(self):
         self.file_name = ""

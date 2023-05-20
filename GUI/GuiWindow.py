@@ -20,7 +20,7 @@ class GuiWindow(QMainWindow):
         self.save_to_file = False
         self.show_all_data = False
         self.file_name = ""
-        self.sound_lvl = 0.3
+        self.sound_lvl = 0.05
 
         self.lb = QLabel(LENG.elem.SYSTEM_MESS_TMP[1], self)
         self.lb.show()

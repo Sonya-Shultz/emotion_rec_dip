@@ -39,11 +39,12 @@ class DataController:
     def show_res(wind):
         if wind.is_from_file:
             if wind.data_type == 0:
-                pass
+                DataController.__show_video(wind, DataController.data, DataController.res2, DataController.res, lvl=wind.sound_lvl)
             elif wind.data_type == 1:
-                pass
+                DataController.__show_video(wind, DataController.data, DataController.res2, DataController.res, with_audio=False)
             elif wind.data_type == 2:
-                pass
+                DataController.__show_audio(wind.lbl_au, DataController.data.audioPart.raw_data,
+                                            DataController.data.audioPart.sr, DataController.res, wind.sound_lvl)
             elif wind.data_type == 3:
                 DataController.__show_audio(wind.lbl_au, DataController.data.raw_data,
                                             DataController.data.sr, DataController.res, wind.sound_lvl)
@@ -62,7 +63,6 @@ class DataController:
 
     @staticmethod
     def comp_data_controller(wind):
-        print(wind.is_from_file, wind.data_type)
         wind.button_again.setEnabled(False)
         if wind.is_from_file:
             try:
@@ -90,7 +90,6 @@ class DataController:
 
     @staticmethod
     def __play_audio(data, sr, lvl=1.0):
-        lvl = max(0.0, min(lvl, 1.0))
         d = data * 32767 * lvl / np.max(np.abs(data))
         d = d.astype(np.int16)
         DataController.play_obj = sa.play_buffer(d, 1, 2, sr)
@@ -99,8 +98,8 @@ class DataController:
     def __show_audio(lb, data, sr, res, lvl, poss=(0, 0)):
         ind = 0
         ind_c = 0
+        time_cur = time.time_ns()
         while ind < len(data) and not DataController.interrupt:
-            time_cur = time.time()
             ind_t = ind
             ind = min(ind + int(sr * ResultData.part_len), len(data))
             d = data[ind_t:ind]
@@ -126,8 +125,9 @@ class DataController:
             lb.move(poss[0], poss[1])
             del pixmap
             ind_c += 1
-            timer_sleep = max(0.0, ResultData.part_len - (time.time() - time_cur))
-            time.sleep(timer_sleep)
+            timer_sleep = max(0.005, ResultData.part_len - max((time.time_ns() - time_cur) / 1e9, 0.0))
+            time.sleep(timer_sleep-0.005)
+            time_cur = time.time_ns()
 
     @staticmethod
     def __show_img(lb, data, res, poss=(0, 0)):
@@ -149,4 +149,30 @@ class DataController:
         lb.adjustSize()
         lb.move(poss[0], poss[1])
         del pixmap
+
+    @staticmethod
+    def __show_video(wind, data, res_v, res_a, with_audio=True, lvl=1.0):
+        ad = data.audioPart
+        vd = data.photoPart
+        th2 = threading.Thread(target=lambda w=wind, v=vd, r=res_v: DataController.__func_t(w, v, r))
+        th2.start()
+        pos2 = int(700/len(vd[0].raw_data)*len(vd[0].raw_data[0]))
+        th = threading.Thread(target=lambda l=wind.lbl_au, d=ad.raw_data, sr=ad.sr, r=res_a, p=pos2, lv=lvl:
+                            DataController.__show_audio(l, d, sr, r, lv, (p, 0)))
+        if with_audio:
+            th.start()
+            th.join()
+        th2.join()
+
+    @staticmethod
+    def __func_t(wind, vd, res_v):
+        i = 0
+        c_time = time.time_ns()
+        while i < len(vd) and not DataController.interrupt:
+            DataController.__show_img(wind.lbl_img, vd[i].raw_data, res_v[i])
+            i += 1
+            t = max(0.005, ResultData.spf - max((time.time_ns() - c_time) / 1e9, 0.0))
+            time.sleep(t-0.005)
+            c_time = time.time_ns()
+
 
