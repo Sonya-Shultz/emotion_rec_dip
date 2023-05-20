@@ -14,9 +14,9 @@ class Language:
 
 class LanguageUA (Language):
     def __init__(self):
-        self.AUDIO_EM = ["Нейтрально", "Спокій", "Щастя", "Сум", "Злість", "Переляк", "Огида", "Здивування"]
-        self.IMG_EM = ["Злість", "Огида", "Страх", "Щастя", "Cум", "Здивування", "Нейтрально"]
-        self.BTNS_TEXTs = ["ОБРОБИТИ", "ОБРАТИ ФАЙЛ", "ВИЙТИ", "НАЗАД"]
+        self.AUDIO_EM = ["Злість", "Спокій", "Огида", "Страх", "Щастя", "Нейтрально", "Сум", "Здивування"]
+        self.IMG_EM = ["Злість", "Огида", "Страх", "Щастя", "Нейтрально", "Сум", "Здивування"]
+        self.BTNS_TEXTs = ["ОБРОБИТИ", "ОБРАТИ ФАЙЛ", "ВИЙТИ", "НАЗАД", "ВІДТВОРИТИ ЗНОВУ"]
         self.DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "З відео лише звук", "Лише звук", "Зображення"]
         self.LBL_TEXTs = ["Обраний файл: "]
         self.RT_DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "З відео лише звук", "Лише звук"]
@@ -29,9 +29,9 @@ class LanguageUA (Language):
 
 class LanguageEN (Language):
     def __init__(self):
-        self.AUDIO_EM = ['Neutral', 'Calm', 'Happy', 'Sad', 'Angry', 'Fear', 'Disgust', 'Surprise']
-        self.IMG_EM = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
-        self.BTNS_TEXTs = ["START", "SELECT FILE", "EXIT", "GO BACK"]
+        self.AUDIO_EM = ['Angry', 'Calm', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
+        self.IMG_EM = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
+        self.BTNS_TEXTs = ["START", "SELECT FILE", "EXIT", "GO BACK", "PLAY AGAIN"]
         self.DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound from video", "Only sound", "Image"]
         self.LBL_TEXTs = ["Selected file: "]
         self.RT_DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound from video", "Only sound"]

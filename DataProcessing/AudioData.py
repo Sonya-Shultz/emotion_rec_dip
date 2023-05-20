@@ -12,13 +12,14 @@ class AudioData:
         self.filename = ""
         self.raw_data = []
         self.features = []
+        self.sr = 0
 
     def read_file(self, filename):
         self.filename = filename
-        self.raw_data, sr = load(self.filename)
-        tmp_arr = self.__divide(sr)
+        self.raw_data, self.sr = load(self.filename)
+        tmp_arr = self.__divide(self.sr)
         for el in tmp_arr:
-            ele = AudioData.__find_features(el, sr)
+            ele = AudioData.__find_features(el, self.sr)
             self.features.append(ele)
 
     def read_input(self, data, sr):

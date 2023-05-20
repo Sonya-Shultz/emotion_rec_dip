@@ -102,14 +102,5 @@ class PrepareData:
                 res2.append(el.process())
         return vd, res1, res2
 
-    @staticmethod
-    def __find_max_em(data, em_numb=1):
-        max_em = []
-        if em_numb > len(data):
-            em_numb = len(data)
-        sorted_h = sorted(data.items(), key=operator.itemgetter(1))
-        sorted_h.reverse()
-        max_em.append(sorted_h[:em_numb])
-        return max_em[0]
 
 
