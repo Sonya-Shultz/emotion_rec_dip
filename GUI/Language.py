@@ -14,37 +14,38 @@ class Language:
 
 class LanguageUA (Language):
     def __init__(self):
+        self.NAME = ['UA', 'EN']
         self.AUDIO_EM = ["Злість", "Спокій", "Огида", "Страх", "Щастя", "Нейтрально", "Сум", "Здивування"]
         self.IMG_EM = ["Злість", "Огида", "Страх", "Щастя", "Нейтрально", "Сум", "Здивування"]
         self.BTNS_TEXTs = ["ОБРОБИТИ", "ОБРАТИ ФАЙЛ", "ВИЙТИ", "НАЗАД", "ВІДТВОРИТИ ЗНОВУ"]
         self.DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "З відео лише звук", "Лише звук", "Зображення"]
         self.LBL_TEXTs = ["Обраний файл: "]
-        self.RT_DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "З відео лише звук", "Лише звук"]
+        self.RT_DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "Лише звук"]
         self.CHECKBOX_TEXTs = ["В режимі реального часу", "Зберегти до файлу", "Показати повний результат"]
         self.SYSTEM_MESS_GOOD = ["Готово!"]
         self.SYSTEM_MESS_TMP = ['Перевірка файлів...', "Йде обробка...",'Запуск пристроїв...']
         self.SYSTEM_MESS_ERR = ["Щось пішло не так при обробці (", "Обраний файл не підходить до обраного формату", "Щось пішло не так("]
-        self.WINDOW_NAMES = ["Головне меню", "Обробка"]
+        self.WINDOW_NAMES = ["Головне меню", "Обробка", "Вибір медіа-файлу"]
 
 
 class LanguageEN (Language):
     def __init__(self):
+        self.NAME = ['EN', 'UA']
         self.AUDIO_EM = ['Angry', 'Calm', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
         self.IMG_EM = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
         self.BTNS_TEXTs = ["START", "SELECT FILE", "EXIT", "GO BACK", "PLAY AGAIN"]
         self.DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound from video", "Only sound", "Image"]
         self.LBL_TEXTs = ["Selected file: "]
-        self.RT_DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound from video", "Only sound"]
+        self.RT_DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound"]
         self.CHECKBOX_TEXTs = ["In real time", "Save result to file", "Show full result"]
         self.SYSTEM_MESS_GOOD = ["Done!"]
         self.SYSTEM_MESS_TMP = ["Inspect Files...", "Processing...", "Starting web & mic..."]
         self.SYSTEM_MESS_ERR = ["Something went wrong while processing (", "Wrong file for selected format!", "Something went wrong ("]
-        self.WINDOW_NAMES = ["Main menu", "Processing"]
+        self.WINDOW_NAMES = ["Main menu", "Processing", "Media-file selection"]
 
 
 class LENG:
     elem = Language()
-    LANG_LIST = ["UA", "EN"]
 
     @staticmethod
     def __init__():

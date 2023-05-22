@@ -53,31 +53,36 @@ class ResultData:
 
     def write_to_file(self, rt=False):
         sec = 0.0
-        if rt:
-            sec = self.start_time
-        else:
-            if self.type == "AUDIO":
-                print(self.file_name)
-                print(self.start_time)
-                for el in self.res_arr:
-                    print(sec, ":", el)
-                    sec = sec + ResultData.part_len
-            elif self.type == "IMG":
-                print(self.file_name)
-                print(self.start_time)
-                for i in range(len(self.position)):
-                    print(self.position[i], ":", self.res_arr[i])
-            elif self.type == "VID":
-                print("vid")
-                print(self.file_name)
-                print(self.start_time)
-                self.__prepare_vid_output()
-
+        print("WR")
+        name = self.type+" "+str(self.start_time)+'.txt'
+        name = name.replace('—', '_')
+        name = name.replace(':', '_')
+        with open(name, 'w') as f:
+            if rt:
+                sec = self.start_time
             else:
-                print(LENG.elem.SYSTEM_MESS_ERR[2])
+                if self.type == "AUDIO":
+                    f.write(self.file_name + "\n")
+                    f.write(str(self.start_time) + "\n")
+                    for el in self.res_arr:
+                        f.write("" + str(sec) + ":" + str(el) + "\n")
+                        sec = sec + ResultData.part_len
+                elif self.type == "IMG":
+                    f.write(self.file_name + "\n")
+                    f.write(str(self.start_time) + "\n")
+                    for i in range(len(self.position)):
+                        f.write("" + str(self.position[i]) + ":" + str(self.res_arr[i]) + "\n")
+                elif self.type == "VID":
+                    f.write(self.file_name + "\n")
+                    f.write(str(self.start_time) + "\n")
+                    self.__prepare_vid_output(f)
 
-    def __prepare_vid_output(self):
+                else:
+                    f.write(LENG.elem.SYSTEM_MESS_ERR[2])
+
+    def __prepare_vid_output(self, file):
         c = 0
+        co = 0
         max_c = int(ResultData.part_len/ResultData.spf)
         tmp_pos, tmp_res = [], []
         for i in range(len(self.res_arr)):
@@ -85,19 +90,36 @@ class ResultData:
             tmp_res.append(self.res_arr[i])
             c += 1
             if c >= max_c:
-                print(i*ResultData.part_len)
-                self.__calc_mean_arr(tmp_res, tmp_pos)
+                file.write(str(co*ResultData.part_len) + "\n")
+                pos_t, res_t = self.__calc_mean_arr(tmp_res, tmp_pos)
+                file.write(str(pos_t) + ":" + str(res_t) + "\n")
                 tmp_pos, tmp_res = [], []
+                co += 1
                 c = 0
 
     @staticmethod
     def __calc_mean_arr(res, pos):
-        t_res = res[0]
-        t_pos = pos[0]
-        for i in range(1, len(res)):
-            t_res += res[i]
-            t_pos += pos[i]
-        t_res = t_res / float(len(res))
-        t_pos = t_pos / float(len(res))
-        for i in range(t_res):
-            print(t_pos[i], ":", t_res[i])
+        res_t = {}
+        pos_t = []
+        fr = True
+        total_l = 0
+        for i in res:
+            total_l += len(i)
+        for t in range(len(res)):
+            res_in_f = res[t]
+            pos_in_f = pos[t]
+            if len(res_in_f) > 0:
+                for h in range(len(res_in_f)):
+                    if fr:
+                        fr = False
+                        for k in res_in_f[h].keys():
+                            res_t[k] = np.around(res_in_f[h][k] / total_l, decimals=2)
+                        pos_t = pos_in_f[h]
+                        for k in range(len(pos_t)):
+                            pos_t[k] = int(pos_t[k] / total_l)
+                    else:
+                        for k in res_in_f[h].keys():
+                            res_t[k] += np.around(res_in_f[h][k] / total_l, decimals=2)
+                        for k in range(len(pos_in_f[h])):
+                            pos_t[k] += int(pos_in_f[h][k] / total_l)
+        return pos_t, res_t

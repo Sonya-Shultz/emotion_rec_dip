@@ -1,8 +1,10 @@
+from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5.QtWidgets import *
 import sys
 import warnings
 
 from CNNsClass.CNN import CNN
+from GUI.DataController import DataController
 from GUI.EnterDataDialog import EnterDataDialog
 from GUI.GuiWindow import GuiWindow
 from GUI.Language import LENG
@@ -19,10 +21,13 @@ if __name__ == '__main__':
     #PrepareData.for_audio("test.mp3")
     #PrepareData.for_video("test.MP4")
     app = QApplication(sys.argv)
-    choose = EnterDataDialog()
+    _id = QFontDatabase.addApplicationFont("Advent_Pro/AdventPro-VariableFont_wdth,wght.ttf")
+    win = GuiWindow()
+    custom_font = QFont('Advent Pro', int(win.height_p*0.02))
+    app.setFont(custom_font)
+    choose = EnterDataDialog(win)
     if not choose.exec_():  # 'reject': user pressed 'Cancel', so quit
         sys.exit(0)
-    win = GuiWindow()
     win.set_data(choose)
     win.show()
     sys.exit(app.exec_())
