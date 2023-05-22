@@ -220,7 +220,8 @@ class EnterDataDialog(QDialog):
             self.file_name = file
 
     def check_params(self):
-        resol = {0: [".mp4"], 1: [".mp4"], 2: [".mp4"], 3: [".mp3", ".wav"], 4: [".jpg", ".png"]}
+        vid = [".ogv", ".mp4", ".mpeg", ".avi", ".mov"]
+        resol = {0: vid, 1: vid, 2: vid, 3: [".mp3", ".wav", ".ogg"], 4: [".jpg", ".png", ".pdf", ".ps", ".svg"]}
         if self.data_type in resol and self.file_name != "":
             r = resol[self.data_type]
             for el in r:
