@@ -20,17 +20,15 @@ class CNN:
     @staticmethod
     def predict_audio_data(data):
         try:
-            res = CNN.audio_model.predict(np.array([data]))
+            res = CNN.audio_model.predict(np.array([data]), verbose=0)
         except Exception as e:
-            print(e)
             return None
         return ResultData.set_to_emotions(res)
 
     @staticmethod
     def predict_img_data(data):
         try:
-            res = CNN.img_model.predict(np.array([data]))
+            res = CNN.img_model.predict(np.array([data]), verbose=0)
         except Exception as e:
-            print(e)
             return None
         return ResultData.set_to_emotions(res, is_audio=False)

@@ -1,6 +1,8 @@
+import PyQt5
 from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5.QtWidgets import *
 import sys
+import tempfile
 import os
 import warnings
 
@@ -14,6 +16,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 if __name__ == '__main__':
+    sys.stdout = tempfile.TemporaryFile()
+    sys.stderr = tempfile.TemporaryFile()
     try:
         os.mkdir("./text_res")
     except OSError as error:

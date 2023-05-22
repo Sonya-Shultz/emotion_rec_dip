@@ -62,7 +62,6 @@ class ResultData:
         name += self.type+" "+str(self.start_time)+'.txt'
         name = name.replace('—', '_')
         name = name.replace(':', '_')
-        print("Write to file "+name)
         with open(name, 'w') as f:
             if self.type == "AUDIO":
                 f.write(self.file_name + "\n")
