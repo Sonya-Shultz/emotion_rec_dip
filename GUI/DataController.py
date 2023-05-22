@@ -8,7 +8,6 @@ import pyaudio
 import simpleaudio as sa
 from PyQt5.QtGui import QPainter
 
-from DataProcessing.ImgData import ImgData
 from DataProcessing.PrepareData import PrepareData
 from DataProcessing.ResultData import ResultData
 from GUI.DrawingHelper import DrawingHelper
@@ -193,11 +192,13 @@ class DataController:
             spectrogram = librosa.power_to_db(spectrogram, ref=np.max)
             spectrogram = spectrogram.astype(np.float32)
 
-            pixmap, scale = DrawingHelper.audio_to_pixelmap(spectrogram)
+            pixmap, scale = DrawingHelper.audio_to_pixelmap(spectrogram, wind.height_p*0.8)
 
             painter = QPainter(pixmap)
             DrawingHelper.create_pen_n_font(painter, color=(255, 13, 13))
             text = ResultData.find_max_em(res.res_arr[ind_c])[0]
+            if wind.show_all_data:
+                DataController.show_all_emotion(wind, [res.res_arr[ind_c]], is_audio=True)
             text = text[0] + " " + str(text[1]) + "%"
             painter.drawText(50, 50, text)
 
@@ -215,7 +216,9 @@ class DataController:
 
     @staticmethod
     def __show_img(wind, data, res):
-        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, 700)
+        if wind.show_all_data:
+            DataController.show_all_emotion(wind, res.res_arr)
+        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, wind.height_p*0.8)
 
         painter = QPainter(pixmap)
         DrawingHelper.create_pen_n_font(painter)
@@ -244,7 +247,7 @@ class DataController:
         vd = data.photoPart
         th2 = threading.Thread(target=lambda w=wind, v=vd, r=res_v: DataController.__func_t(w, v, r))
         th2.start()
-        pos2 = int(700/len(vd[0].raw_data)*len(vd[0].raw_data[0]))
+        pos2 = int(wind.height_p*0.8/len(vd[0].raw_data)*len(vd[0].raw_data[0]))
         pos2 = (pos2, wind.pos_start[1])
         th = threading.Thread(target=lambda w=wind, d=ad.raw_data, sr=ad.sr, r=res_a, p=pos2, lv=lvl:
                             DataController.__show_audio(w, d, sr, r, lv, p))
@@ -267,4 +270,43 @@ class DataController:
             time.sleep(t-0.005)
             c_time = time.time_ns()
 
+    @staticmethod
+    def show_all_emotion(wind, data, is_audio=False):
+        if len(data) == 0:
+            return
+        ans = []
+        colors = ResultData.colors_V
+        if is_audio:
+            colors = ResultData.colors_A
+        for el in data:
+            tmp = []
+            i = 0
+            for k in el.keys():
+                tmp.append(colors[i])
+                for j in range(int(el[k] * 20)):
+                    tmp.append(colors[i])
+                i += 1
+            ans.append(tmp)
+
+        for n in range(len(ans)):
+            for j in range(0, 2000 - len(ans[n])):
+                ans[n].append([255, 255, 255])
+            ans[n] = ans[n][0:2000]
+        shape = (len(ans), 2000, 3)
+        ans = np.array(ans)
+        ans = ans.astype(np.int8)
+        ans = ans.reshape(shape)
+        px, _ = DrawingHelper.from_arr_to_pixelmap(ans, wind.height_p*0.045, width=wind.width_p)
+        painter = QPainter(px)
+        DrawingHelper.create_pen_n_font(painter)
+        painter.end()
+        del painter
+        if is_audio:
+            wind.lbl_px_a.setPixmap(px)
+            wind.lbl_px_a.adjustSize()
+        else:
+            wind.lbl_px_i.setPixmap(px)
+            wind.lbl_px_i.adjustSize()
+
+        del px
 

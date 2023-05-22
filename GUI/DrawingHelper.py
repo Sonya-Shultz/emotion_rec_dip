@@ -11,7 +11,7 @@ class DrawingHelper:
         pass
 
     @staticmethod
-    def from_arr_to_pixelmap(data, height):
+    def from_arr_to_pixelmap(data, height, width=None):
         h, w, comp = data.shape
         bytesPerLine = 3 * w
         QImg = QImage(
@@ -22,8 +22,11 @@ class DrawingHelper:
             QImage.Format_RGB888
         )
         pixmap = QPixmap.fromImage(QImg)
-        pixmap = pixmap.scaledToHeight(height)
-        scale = 700.0 / h
+        if width:
+            pixmap = pixmap.scaled(width, height, Qt.IgnoreAspectRatio)
+        else:
+            pixmap = pixmap.scaledToHeight(height)
+        scale = height / h
         return pixmap, scale
 
     @staticmethod
@@ -37,10 +40,10 @@ class DrawingHelper:
         pi.setFont(font)
 
     @staticmethod
-    def audio_to_pixelmap(data):
+    def audio_to_pixelmap(data, height):
         data = np.array(((data + 80)/80.0 * 255).astype(np.int8))
         data = np.stack((data,) * 3, axis=-1)
-        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, 700)
+        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, height)
         return pixmap, scale
 
 

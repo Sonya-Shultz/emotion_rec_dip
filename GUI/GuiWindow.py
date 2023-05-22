@@ -4,6 +4,7 @@ import ctypes
 
 from PyQt5.QtWidgets import *
 
+from DataProcessing.ResultData import ResultData
 from GUI.DataController import DataController
 from GUI.EnterDataDialog import EnterDataDialog
 from GUI.Language import LENG
@@ -25,6 +26,7 @@ class GuiWindow(QMainWindow):
         self.save_to_file = False
         self.show_all_data = False
         self.file_name = ""
+        self.color_lbl = []
 
         self.lb = QLabel(LENG.elem.SYSTEM_MESS_TMP[1], self)
 
@@ -40,6 +42,14 @@ class GuiWindow(QMainWindow):
         self.lbl_img = QLabel("", self)
 
         self.lbl_au = QLabel("", self)
+
+        self.lbl_px_i = QLabel("", self)
+        self.lbl_px_a = QLabel("", self)
+
+        for i in range(len(ResultData.colors_A)):
+            col_l = QLabel(LENG.elem.AUDIO_EM[i], self)
+            self.color_lbl.append(col_l)
+
         self.set_text(LENG.elem.NAME[0])
 
     def set_text(self, language):
@@ -74,6 +84,25 @@ class GuiWindow(QMainWindow):
         self.lbl_img.resize(0, 0)
         self.lbl_au.move(self.pos_start[0], self.pos_start[1])
         self.lbl_au.resize(0, 0)
+
+        pos = self.width_p*0.1
+        for i in range(len(self.color_lbl)):
+            self.color_lbl[i].setText(LENG.elem.AUDIO_EM[i])
+            text = "color: rgb("+str(ResultData.colors_A[i][0])+","+str(ResultData.colors_A[i][1])+\
+                    ","+str(ResultData.colors_A[i][2])+")"
+            self.color_lbl[i].setStyleSheet(text)
+            self.color_lbl[i].adjustSize()
+            self.color_lbl[i].move(pos, self.height_p * 0.91 - self.color_lbl[i].height())
+            pos += self.width_p*0.05 + self.color_lbl[i].width()
+        self.lbl_px_i.resize(0, 0)
+        self.lbl_px_a.resize(0, 0)
+        if self.show_all_data:
+            self.lbl_px_i.resize(self.width_p, self.height_p*0.045)
+            self.lbl_px_i.resize(0, 0)
+            self.lbl_px_a.resize(self.width_p, self.height_p*0.045)
+            self.lbl_px_a.resize(0, 0)
+        self.lbl_px_i.move(0, self.height_p*0.91)
+        self.lbl_px_a.move(0, self.height_p*0.955)
 
     def closeEvent(self, event):
         DataController.stop()
