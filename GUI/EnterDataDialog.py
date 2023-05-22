@@ -2,7 +2,7 @@ import ctypes
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QVariant
 from GUI.Language import LENG
 
 
@@ -44,9 +44,11 @@ class EnterDataDialog(QDialog):
         self.button_file = QPushButton(LENG.elem.BTNS_TEXTs[1], self)
         self.button_file.clicked.connect(self.on_click_file_choose)
         self.all_ed_comp.append(self.button_file)
+        self.button_file.setProperty("class", "MidBtn")
 
         self.button_exit = QPushButton(LENG.elem.BTNS_TEXTs[2], self)
         self.button_exit.clicked.connect(self.on_click_close)
+        self.button_exit.setProperty("class", QVariant("ExitBtn"))
 
         self.filename_lbl = QLabel(LENG.elem.LBL_TEXTs[0], self)
         self.filename_lbl.show()

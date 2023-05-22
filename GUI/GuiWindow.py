@@ -32,16 +32,20 @@ class GuiWindow(QMainWindow):
 
         self.btn = QPushButton(LENG.elem.BTNS_TEXTs[3], self)
         self.btn.clicked.connect(self.on_click_back)
+        self.btn.setProperty("class", "MidBtn MainBtn")
 
         self.button_exit = QPushButton(LENG.elem.BTNS_TEXTs[2], self)
         self.button_exit.clicked.connect(self.on_click_close)
+        self.button_exit.setProperty("class", "ExitBtn MainBtn")
 
         self.button_again = QPushButton(LENG.elem.BTNS_TEXTs[4], self)
         self.button_again.clicked.connect(self.on_click_repeat)
+        self.button_again.setProperty("class", "MainBtn")
 
         self.lbl_img = QLabel("", self)
 
         self.lbl_au = QLabel("", self)
+        self.lbl_au.setProperty("class", "magin_l")
 
         self.lbl_px_i = QLabel("", self)
         self.lbl_px_a = QLabel("", self)
@@ -97,9 +101,9 @@ class GuiWindow(QMainWindow):
         self.lbl_px_i.resize(0, 0)
         self.lbl_px_a.resize(0, 0)
         if self.show_all_data:
-            self.lbl_px_i.resize(self.width_p, self.height_p*0.045)
+            #self.lbl_px_i.resize(self.width_p, self.height_p*0.045)
             self.lbl_px_i.resize(0, 0)
-            self.lbl_px_a.resize(self.width_p, self.height_p*0.045)
+            #self.lbl_px_a.resize(self.width_p, self.height_p*0.045)
             self.lbl_px_a.resize(0, 0)
         self.lbl_px_i.move(0, self.height_p*0.91)
         self.lbl_px_a.move(0, self.height_p*0.955)

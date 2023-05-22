@@ -222,7 +222,7 @@ class DataController:
             spectrogram = librosa.power_to_db(spectrogram, ref=np.max)
             spectrogram = spectrogram.astype(np.float32)
 
-            pixmap, scale = DrawingHelper.audio_to_pixelmap(spectrogram, wind.height_p*0.8)
+            pixmap, scale = DrawingHelper.audio_to_pixelmap(spectrogram, wind.height_p*0.8-20)
 
             painter = QPainter(pixmap)
             DrawingHelper.create_pen_n_font(painter, color=(255, 13, 13))
@@ -237,6 +237,8 @@ class DataController:
 
             wind.lbl_au.setPixmap(pixmap)
             wind.lbl_au.adjustSize()
+            if wind.lbl_au.pos().x() > poss[0]:
+                poss[0] = wind.lbl_au.pos().x()
             wind.lbl_au.move(poss[0], poss[1])
             del pixmap
             ind_c += 1
@@ -248,7 +250,7 @@ class DataController:
     def __show_img(wind, data, res):
         if wind.show_all_data:
             DataController.show_all_emotion(wind, res.res_arr)
-        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, wind.height_p*0.8)
+        pixmap, scale = DrawingHelper.from_arr_to_pixelmap(data, wind.height_p*0.8-20)
 
         painter = QPainter(pixmap)
         DrawingHelper.create_pen_n_font(painter)

@@ -25,10 +25,13 @@ if __name__ == '__main__':
     CNN()
     LENG()
     app = QApplication(sys.argv)
-    _id = QFontDatabase.addApplicationFont("Advent_Pro/AdventPro-VariableFont_wdth,wght.ttf")
+    _id = QFontDatabase.addApplicationFont("./Styles/AdventPro-VariableFont_wdth,wght.ttf")
     win = GuiWindow()
     custom_font = QFont('Advent Pro', int(win.height_p*0.02))
     app.setFont(custom_font)
+    with open("./Styles/style.css", 'r') as file:
+        sheet = file.read()
+    app.setStyleSheet(sheet)
     choose = EnterDataDialog(win)
     if not choose.exec_():
         sys.exit(0)
