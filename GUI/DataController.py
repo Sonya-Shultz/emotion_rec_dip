@@ -118,14 +118,27 @@ class DataController:
     @staticmethod
     def start_web(wind):
         DataController.cap = cv2.VideoCapture(0)
+        vd = ResultData()
+        vd.set_param("RT", "VID")
+        tim = 0.0
+        t_old = time.time()
         while not DataController.interrupt:
             ret, img = DataController.cap.read()
             b, g, r = cv2.split(img)
             img = cv2.merge([r, g, b])
             DataController.data2, DataController.res2 = PrepareData.for_photo_data(img)
-            th = threading.Thread(target=lambda w=wind, d=DataController.data2.raw_data, r=DataController.res2:
-                                                                                    DataController.__show_img(w, d, r))
+            vd.add_new_data(DataController.res2.res_arr, position=DataController.res2.position)
+            if tim >= ResultData.max_len:
+                vd.write_to_file(rt=True)
+                tim = 0.0
+                vd = ResultData()
+                vd.set_param("RT", "VID")
+            th = threading.Thread(target=lambda w=wind, d=DataController.data2.raw_data, re=DataController.res2:
+                                                                                    DataController.__show_img(w, d, re))
             th.start()
+            tim += time.time() - t_old
+            t_old = time.time()
+        vd.write_to_file(rt=True)
         wind.lbl_img.resize(0, 0)
 
     @staticmethod
@@ -133,6 +146,10 @@ class DataController:
         sr = 22050
         p = pyaudio.PyAudio()
         stream = None
+        ad = ResultData()
+        ad.set_param("RT", "AUDIO")
+        tim = 0.0
+        t_old = time.time()
         if DataController.data2:
             pos = (wind.lbl_img.width+wind.pos_start[0], wind.pos_start[1])
         try:
@@ -155,16 +172,25 @@ class DataController:
                 if DataController.interrupt:
                     break
                 DataController.data, DataController.res = PrepareData.for_audio_data(frames, sr)
+                ad.add_new_data(DataController.res.res_arr)
+                if tim >= ResultData.max_len:
+                    ad.write_to_file(rt=True)
+                    tim = 0.0
+                    ad = ResultData()
+                    ad.set_param("RT", "AUDIO")
                 th = threading.Thread(target=lambda w=wind, d=DataController.data.raw_data, s=sr, r=DataController.res,
                                       lv=lvl, p_=pos:
                                       DataController.__show_audio(w, d, s, r, lv, p_))
                 th.start()
+                tim += time.time() - t_old
+                t_old = time.time()
         except Exception as e:
             wind.lb.setText(LENG.elem.SYSTEM_MESS_ERR[2] + "\n" + str(e))
             wind.lb.adjustSize()
         if stream:
             stream.stop_stream()
             stream.close()
+        ad.write_to_file(rt=True)
         p.terminate()
         lbl.resize(0, 0)
 

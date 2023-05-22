@@ -1,9 +1,3 @@
-import operator
-import cv2
-import numpy as np
-import threading
-import pyaudio
-
 from DataProcessing.AudioData import AudioData
 from DataProcessing.ImgData import ImgData
 from DataProcessing.ResultData import ResultData

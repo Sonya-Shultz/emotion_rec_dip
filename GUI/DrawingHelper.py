@@ -2,8 +2,6 @@ import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap, QPen, QFont, QColor
 
-from DataProcessing.ResultData import ResultData
-
 
 class DrawingHelper:
     @staticmethod

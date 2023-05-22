@@ -8,6 +8,7 @@ from GUI.Language import LENG
 
 class ResultData:
     part_len = 2.5
+    max_len = 200.0
     spf = 1.0/20.0
     fps = 20.0
     colors_V = [[255,0,0],[255,127,0],[255,255,0],[0,255,0],[0,25,255],[25,0,200],[148,0,211]]
@@ -55,32 +56,32 @@ class ResultData:
 
     def write_to_file(self, rt=False):
         sec = 0.0
-        print("WR")
-        name = self.type+" "+str(self.start_time)+'.txt'
+        name = "./text_res/"
+        if rt:
+            name += "Real_Time_"
+        name += self.type+" "+str(self.start_time)+'.txt'
         name = name.replace('—', '_')
         name = name.replace(':', '_')
+        print("Write to file "+name)
         with open(name, 'w') as f:
-            if rt:
-                sec = self.start_time
-            else:
-                if self.type == "AUDIO":
-                    f.write(self.file_name + "\n")
-                    f.write(str(self.start_time) + "\n")
-                    for el in self.res_arr:
-                        f.write("" + str(sec) + ":" + str(el) + "\n")
-                        sec = sec + ResultData.part_len
-                elif self.type == "IMG":
-                    f.write(self.file_name + "\n")
-                    f.write(str(self.start_time) + "\n")
-                    for i in range(len(self.position)):
-                        f.write("" + str(self.position[i]) + ":" + str(self.res_arr[i]) + "\n")
-                elif self.type == "VID":
-                    f.write(self.file_name + "\n")
-                    f.write(str(self.start_time) + "\n")
-                    self.__prepare_vid_output(f)
+            if self.type == "AUDIO":
+                f.write(self.file_name + "\n")
+                f.write(str(self.start_time) + "\n")
+                for el in self.res_arr:
+                    f.write("" + str(sec) + ":" + str(el) + "\n")
+                    sec = sec + ResultData.part_len
+            elif self.type == "IMG":
+                f.write(self.file_name + "\n")
+                f.write(str(self.start_time) + "\n")
+                for i in range(len(self.position)):
+                    f.write("" + str(self.position[i]) + ":" + str(self.res_arr[i]) + "\n")
+            elif self.type == "VID":
+                f.write(self.file_name + "\n")
+                f.write(str(self.start_time) + "\n")
+                self.__prepare_vid_output(f)
 
-                else:
-                    f.write(LENG.elem.SYSTEM_MESS_ERR[2])
+            else:
+                f.write(LENG.elem.SYSTEM_MESS_ERR[2])
 
     def __prepare_vid_output(self, file):
         c = 0
