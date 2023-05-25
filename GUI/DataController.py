@@ -117,31 +117,40 @@ class DataController:
 
     @staticmethod
     def start_web(wind):
-        DataController.cap = cv2.VideoCapture(0)
-        vd = ResultData()
-        vd.set_param("RT", "VID")
-        tim = 0.0
-        t_old = time.time()
-        while not DataController.interrupt:
-            ret, img = DataController.cap.read()
-            b, g, r = cv2.split(img)
-            img = cv2.merge([r, g, b])
-            DataController.data2, DataController.res2 = PrepareData.for_photo_data(img)
-            if wind.save_to_file:
-                vd.add_new_data(DataController.res2.res_arr, position=DataController.res2.position)
-                if tim >= ResultData.max_len:
-                    vd.write_to_file(rt=True)
-                    tim = 0.0
-                    vd = ResultData()
-                    vd.set_param("RT", "VID")
-            th = threading.Thread(target=lambda w=wind, d=DataController.data2.raw_data, re=DataController.res2:
-                                                                                    DataController.__show_img(w, d, re))
-            th.start()
-            tim += time.time() - t_old
+        try:
+            DataController.cap = cv2.VideoCapture(0)
+            vd = ResultData()
+            vd.set_param("RT", "VID")
+            tim = 0.0
             t_old = time.time()
-        if wind.save_to_file:
-            vd.write_to_file(rt=True)
-        wind.lbl_img.resize(0, 0)
+            while not DataController.interrupt:
+                ret, img = DataController.cap.read()
+                if not ret:
+                    wind.lb.setText(LENG.elem.SYSTEM_MESS_ERR[3])
+                    wind.lb.adjustSize()
+                    break
+                b, g, r = cv2.split(img)
+                img = cv2.merge([r, g, b])
+                DataController.data2, DataController.res2 = PrepareData.for_photo_data(img)
+                if wind.save_to_file:
+                    vd.add_new_data(DataController.res2.res_arr, position=DataController.res2.position)
+                    if tim >= ResultData.max_len:
+                        vd.write_to_file(rt=True)
+                        tim = 0.0
+                        vd = ResultData()
+                        vd.set_param("RT", "VID")
+                th = threading.Thread(target=lambda w=wind, d=DataController.data2.raw_data, re=DataController.res2:
+                                                                                        DataController.__show_img(w, d, re))
+                th.start()
+                tim += time.time() - t_old
+                t_old = time.time()
+            if wind.save_to_file:
+                vd.write_to_file(rt=True)
+            wind.lbl_img.resize(0, 0)
+        except Exception as e:
+            wind.lb.setText(LENG.elem.SYSTEM_MESS_ERR[3]+"\n"+str(e))
+            wind.lb.adjustSize()
+            wind.lbl_img.resize(0, 0)
 
     @staticmethod
     def start_audio(wind, lbl, lvl, pos=(0, 0)):
@@ -188,7 +197,7 @@ class DataController:
                 tim += time.time() - t_old
                 t_old = time.time()
         except Exception as e:
-            wind.lb.setText(LENG.elem.SYSTEM_MESS_ERR[2] + "\n" + str(e))
+            wind.lb.setText(LENG.elem.SYSTEM_MESS_ERR[4] + "\n" + str(e))
             wind.lb.adjustSize()
         if stream:
             stream.stop_stream()
@@ -200,7 +209,7 @@ class DataController:
 
     @staticmethod
     def __play_audio(data, sr, lvl=1.0):
-        d = data * 32767 * lvl / np.max(np.abs(data))
+        d = data * 32767 * lvl / 1.414
         d = d.astype(np.int16)
         DataController.play_obj = sa.play_buffer(d, 1, 2, sr)
 

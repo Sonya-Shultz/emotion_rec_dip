@@ -23,10 +23,11 @@ class AudioData:
             self.features.append(ele)
 
     def read_input(self, data, sr):
+        self.sr = sr
         self.raw_data = data
-        tmp_arr = self.__divide(sr)
+        tmp_arr = self.__divide(self.sr)
         for el in tmp_arr:
-            ele = AudioData.__find_features(el, sr)
+            ele = AudioData.__find_features(el, self.sr)
             self.features.append(ele)
 
     def __divide(self, sr):
