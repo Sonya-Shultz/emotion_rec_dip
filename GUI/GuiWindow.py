@@ -17,7 +17,7 @@ class GuiWindow(QMainWindow):
         self.height_p = ctypes.windll.user32.GetSystemMetrics(1)*0.8
         self.width_p = ctypes.windll.user32.GetSystemMetrics(0)*0.8
         self.pos_start = [self.width_p*.01, 0.0, 0.0]
-        self.sound_lvl = 0.3
+        self.sound_lvl = 0.4
         self.res_show_thread = None
         self.move(self.width_p*.1, self.height_p*.1)
         self.setFixedSize(self.width_p, self.height_p)
@@ -134,6 +134,10 @@ class GuiWindow(QMainWindow):
 
     def show(self) -> None:
         super().show()
+        DataController.res = None
+        DataController.res2 = None
+        DataController.data = None
+        DataController.data2 = None
         DataController.interrupt = False
         self.lb.setText(LENG.elem.SYSTEM_MESS_TMP[1])
         self.lb.adjustSize()

@@ -23,7 +23,7 @@ class LanguageUA (Language):
         self.RT_DATA_TYPES = ["Відео зі звуком", "Лише відео без звуку", "Лише звук"]
         self.CHECKBOX_TEXTs = ["В режимі реального часу", "Зберегти до файлу", "Показати повний результат"]
         self.SYSTEM_MESS_GOOD = ["Готово!"]
-        self.SYSTEM_MESS_TMP = ['Перевірка файлів...', "Йде обробка...",'Запуск пристроїв...']
+        self.SYSTEM_MESS_TMP = ['Перевірка файлів...', "Йде обробка...",'Запуск пристроїв...', ' обробки при довжині ']
         self.SYSTEM_MESS_ERR = ["Щось пішло не так при обробці (", "Обраний файл не підходить до обраного формату", "Щось пішло не так(", "Щось не так з веб-камерою!", "Щось не так з мікрофоном!"]
         self.WINDOW_NAMES = ["Головне меню", "Обробка", "Вибір медіа-файлу"]
 
@@ -39,7 +39,7 @@ class LanguageEN (Language):
         self.RT_DATA_TYPES = ["Video & sound", "Only video no sound", "Only sound"]
         self.CHECKBOX_TEXTs = ["In real time", "Save result to file", "Show full result"]
         self.SYSTEM_MESS_GOOD = ["Done!"]
-        self.SYSTEM_MESS_TMP = ["Inspect Files...", "Processing...", "Starting web & mic..."]
+        self.SYSTEM_MESS_TMP = ["Inspect Files...", "Processing...", "Starting web & mic...", ' for processing while len is ']
         self.SYSTEM_MESS_ERR = ["Something went wrong while processing (", "Wrong file for selected format!", "Something went wrong ("]
         self.WINDOW_NAMES = ["Main menu", "Processing", "Media-file selection"]
 

@@ -36,10 +36,6 @@ class DataController:
         if DataController.cap:
             DataController.cap.release()
             DataController.cap = None
-        DataController.res = None
-        DataController.res2 = None
-        DataController.data = None
-        DataController.data2 = None
 
     @staticmethod
     def show_res(wind):
@@ -50,8 +46,8 @@ class DataController:
                 DataController.__show_video(wind, DataController.data2, DataController.res2, DataController.res, with_audio=False)
             elif wind.data_type == 2:
                 pos = (wind.pos_start[0], wind.pos_start[1])
-                DataController.__show_audio(wind, DataController.data.audioPart.raw_data,
-                                            DataController.data.audioPart.sr, DataController.res,
+                DataController.__show_audio(wind, DataController.data2.audioPart.raw_data,
+                                            DataController.data2.audioPart.sr, DataController.res,
                                             wind.sound_lvl, poss=pos)
             elif wind.data_type == 3:
                 pos = (wind.pos_start[0], wind.pos_start[1])
@@ -59,7 +55,9 @@ class DataController:
                                             DataController.data.sr, DataController.res, wind.sound_lvl, poss=pos)
             else:
                 DataController.__show_img(wind, DataController.data2.raw_data, DataController.res2)
-            wind.lb.setText(LENG.elem.SYSTEM_MESS_GOOD[0])
+            wind.lb.setText(LENG.elem.SYSTEM_MESS_GOOD[0] + ", " + str(np.around(PrepareData.time_proc, decimals=2)) +
+                            LENG.elem.SYSTEM_MESS_TMP[3] + str(np.around(PrepareData.time_total, decimals=2)))
+            wind.lb.adjustSize()
 
             wind.button_again.setEnabled(True)
 
@@ -71,18 +69,25 @@ class DataController:
                 if wind.data_type == 0:
                     DataController.data2, DataController.res, DataController.res2 \
                         = PrepareData.for_video(wind.file_name)
+                    PrepareData.time_total = len(DataController.data2.photoPart) / ResultData.fps
                 elif wind.data_type == 1:
                     DataController.data2, _, DataController.res2 \
                         = PrepareData.for_video(wind.file_name, with_sound=False)
+                    PrepareData.time_total = len(DataController.data2.photoPart) / ResultData.fps
                 elif wind.data_type == 2:
-                    DataController.data, DataController.res, _ \
+                    DataController.data2, DataController.res, _ \
                         = PrepareData.for_video(wind.file_name, with_video=False)
+                    PrepareData.time_total = len(DataController.data2.audioPart.raw_data) / DataController.data2.audioPart.sr
                 elif wind.data_type == 3:
                     DataController.data, DataController.res \
                         = PrepareData.for_audio(wind.file_name)
+                    PrepareData.time_total = len(DataController.data.raw_data) / DataController.data.sr
                 else:
                     DataController.data2, DataController.res2 = PrepareData.for_photo(wind.file_name)
-                wind.lb.setText(LENG.elem.SYSTEM_MESS_GOOD[0])
+                    PrepareData.time_total = 0.0
+                wind.lb.setText(LENG.elem.SYSTEM_MESS_GOOD[0] + ", " + str(np.around(PrepareData.time_proc, decimals=2))
+                                + LENG.elem.SYSTEM_MESS_TMP[3] + str(np.around(PrepareData.time_total, decimals=2)))
+                wind.lb.adjustSize()
                 wind.res_show_thread = threading.Thread(target=lambda w=wind: DataController.show_res(w))
                 wind.res_show_thread.start()
                 if wind.save_to_file:
@@ -300,16 +305,17 @@ class DataController:
     @staticmethod
     def __func_t(wind, vd, res_v):
         i = 0
-        c_time = time.time_ns()
-        while i < len(vd) and not DataController.interrupt:
+        start_time = time.time()
+        while not DataController.interrupt and i < len(vd):
             r = ResultData()
             for j in range(len(res_v.res_arr[i])):
                 r.add_new_data(res_v.res_arr[i][j], res_v.position[i][j])
             DataController.__show_img(wind, vd[i].raw_data, r)
             i += 1
-            t = max(0.005, ResultData.spf - max((time.time_ns() - c_time) / 1e9, 0.0))
-            time.sleep(t-0.005)
-            c_time = time.time_ns()
+            start_time += ResultData.spf
+            t = start_time - time.time()
+            if t > 0.0001:
+                time.sleep(t)
 
     @staticmethod
     def show_all_emotion(wind, data, is_audio=False):
