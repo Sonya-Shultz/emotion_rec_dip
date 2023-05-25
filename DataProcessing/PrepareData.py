@@ -1,3 +1,5 @@
+import threading
+
 from DataProcessing.AudioData import AudioData
 from DataProcessing.ImgData import ImgData
 from DataProcessing.ResultData import ResultData
@@ -5,6 +7,8 @@ from DataProcessing.VideoData import VideoData
 
 
 class PrepareData:
+    audio_d = None
+    video_d = None
 
     @staticmethod
     def for_audio(filename):
@@ -38,9 +42,12 @@ class PrepareData:
     def for_video(filename, with_sound=True, with_video=True):
         vd = VideoData()
         vd.read_file(filename)
-        res1 = None
+        res1 = []
+        th = None
         if with_sound:
-            res1 = vd.audioPart.process()
+            th = threading.Thread(target=lambda r=res1, d=vd.audioPart: r.append(d.process()))
+            th.start()
+            #res1 = vd.audioPart.process()
         res22 = None
         #res2 = []
         if with_video:
@@ -50,7 +57,6 @@ class PrepareData:
                 el = vd.photoPart[i]
                 r = el.process()
                 res22.add_new_data(r.res_arr, position=r.position)
-        return vd, res1, res22
-
-
-
+        if with_sound:
+            th.join()
+        return vd, res1[0], res22
