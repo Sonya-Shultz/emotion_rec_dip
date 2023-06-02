@@ -18,8 +18,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     try:
-        #sys.stdout = tempfile.TemporaryFile()
-        #sys.stderr = tempfile.TemporaryFile()
+        sys.stdout = tempfile.TemporaryFile()
+        sys.stderr = tempfile.TemporaryFile()
         try:
             os.mkdir("./text_res")
         except OSError as error:
